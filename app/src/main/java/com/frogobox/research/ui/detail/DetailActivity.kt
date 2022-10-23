@@ -1,6 +1,5 @@
 package com.frogobox.research.ui.detail
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -41,16 +40,16 @@ class DetailActivity : BaseBindActivity<ActivityDetailBinding>() {
     override fun initView() {
         super.initView()
         binding.apply {
-            btnBackToMain.setOnClickListener {
 
+            btnBackToMain.setOnClickListener {
                 val message = "Horee $extraData from Detail Activity"
 
                 setResult(RESULT_CODE_FROM_DETAIL, Intent().apply {
                     putExtra(RESULT_EXTRA_DATA, message)
                 })
                 finish() // finishing activity
-
             }
+
         }
     }
 
