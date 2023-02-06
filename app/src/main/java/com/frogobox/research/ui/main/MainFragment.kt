@@ -1,5 +1,6 @@
 package com.frogobox.research.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,11 +9,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.frogobox.research.core.BaseBindFragment
 import com.frogobox.research.databinding.FragmentMainBinding
+import com.frogobox.research.ui.detail.DetailActivity
+import com.frogobox.research.util.Constant
 
 class MainFragment : BaseBindFragment<FragmentMainBinding>() {
 
     companion object {
-        private val TAG: String = MainFragment::class.java.simpleName
+
+        val TAG: String = MainFragment::class.java.simpleName
+
+        const val EXTRA_FRAGMENT = "extra_fragment"
+
+        fun newInstance(data: String? = null) = MainFragment().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_FRAGMENT, data)
+            }
+        }
     }
 
     private val viewModel: MainViewModel by viewModels()
@@ -38,6 +50,16 @@ class MainFragment : BaseBindFragment<FragmentMainBinding>() {
     override fun initView() {
         super.initView()
         binding.apply {
+            if (arguments != null) {
+                tvMain.text = arguments?.getString(EXTRA_FRAGMENT)
+            }
+
+            btnGoToDetail.setOnClickListener {
+                (activity as MainActivity).startActivityResult.launch(Intent(requireActivity(), DetailActivity::class.java).apply {
+                    putExtra(Constant.Extra.EXTRA_DATA, "Hello World From Fragment!!!")
+                    putExtra(Constant.Extra.EXTRA_KEY_FRAGMENT, true)
+                })
+            }
 
         }
     }

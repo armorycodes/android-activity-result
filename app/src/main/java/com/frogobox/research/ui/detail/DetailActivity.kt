@@ -7,8 +7,10 @@ import androidx.activity.viewModels
 import com.frogobox.research.core.BaseBindActivity
 import com.frogobox.research.databinding.ActivityDetailBinding
 import com.frogobox.research.util.Constant
+import com.frogobox.research.util.Constant.Extra.EXTRA_KEY_FRAGMENT
 import com.frogobox.research.util.Constant.Extra.RESULT_EXTRA_DATA
-import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL
+import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL_TO_ACTIVITY
+import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL_TO_FRAGMENT
 
 
 class DetailActivity : BaseBindActivity<ActivityDetailBinding>() {
@@ -44,9 +46,15 @@ class DetailActivity : BaseBindActivity<ActivityDetailBinding>() {
             btnBackToMain.setOnClickListener {
                 val message = "Horee $extraData from Detail Activity"
 
-                setResult(RESULT_CODE_FROM_DETAIL, Intent().apply {
-                    putExtra(RESULT_EXTRA_DATA, message)
-                })
+                if (intent.hasExtra(EXTRA_KEY_FRAGMENT)) {
+                    setResult(RESULT_CODE_FROM_DETAIL_TO_FRAGMENT, Intent().apply {
+                        putExtra(RESULT_EXTRA_DATA, message)
+                    })
+                } else {
+                    setResult(RESULT_CODE_FROM_DETAIL_TO_ACTIVITY, Intent().apply {
+                        putExtra(RESULT_EXTRA_DATA, message)
+                    })
+                }
                 finish() // finishing activity
             }
 

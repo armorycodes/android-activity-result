@@ -9,7 +9,8 @@ import com.frogobox.research.core.BaseBindActivity
 import com.frogobox.research.databinding.ActivityMainBinding
 import com.frogobox.research.ui.detail.DetailActivity
 import com.frogobox.research.util.Constant
-import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL
+import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL_TO_ACTIVITY
+import com.frogobox.research.util.Constant.ResultCode.RESULT_CODE_FROM_DETAIL_TO_FRAGMENT
 
 class MainActivity : BaseBindActivity<ActivityMainBinding>() {
 
@@ -19,12 +20,22 @@ class MainActivity : BaseBindActivity<ActivityMainBinding>() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private var startActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_CODE_FROM_DETAIL) {
+    var startActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_CODE_FROM_DETAIL_TO_ACTIVITY) {
             // There are no request codes
             val data: Intent? = result.data
+            val text = data?.getStringExtra(Constant.Extra.RESULT_EXTRA_DATA)
+
             Log.d(TAG, "Result : ${data?.getStringExtra(Constant.Extra.EXTRA_DATA)}")
-            binding.tvMain.text = data?.getStringExtra(Constant.Extra.RESULT_EXTRA_DATA)
+            binding.tvMain.text = text
+
+        } else if (result.resultCode == RESULT_CODE_FROM_DETAIL_TO_FRAGMENT) {
+            val data: Intent? = result.data
+            val text = data?.getStringExtra(Constant.Extra.RESULT_EXTRA_DATA)
+
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainerView.id, MainFragment.newInstance(text))
+                .commit()
         }
     }
 
@@ -46,9 +57,13 @@ class MainActivity : BaseBindActivity<ActivityMainBinding>() {
         super.initView()
         binding.apply {
 
+            supportFragmentManager.beginTransaction()
+                .replace(fragmentContainerView.id, MainFragment.newInstance())
+                .commit()
+
             btnGoToDetail.setOnClickListener {
                 startActivityResult.launch(Intent(this@MainActivity, DetailActivity::class.java).apply {
-                    putExtra(Constant.Extra.EXTRA_DATA, "Hello World !!!")
+                    putExtra(Constant.Extra.EXTRA_DATA, "Hello World From Activity !!!")
                 })
             }
 
